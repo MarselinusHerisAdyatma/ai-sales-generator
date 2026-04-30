@@ -23,8 +23,5 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-COPY --from=node /app/public/build ./public/build
-
-RUN chmod -R 775 storage bootstrap/cache
-
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# 🔥 INI YANG KRUSIAL
+COPY --from=node /app/public/build /app/public/build
