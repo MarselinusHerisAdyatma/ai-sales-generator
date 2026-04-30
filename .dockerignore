@@ -1,12 +1,4 @@
 node_modules
-/public/build
 /vendor
+/public/build
 .env
-
-.git
-.gitignore
-
-storage
-bootstrap/cache
-
-public/build

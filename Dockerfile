@@ -1,3 +1,20 @@
+# =========================
+# NODE BUILD (VITE)
+# =========================
+FROM node:18 AS node
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# =========================
+# LARAVEL APP
+# =========================
 FROM php:8.2-cli
 
 WORKDIR /app
@@ -10,22 +27,22 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-# 🔥 WAJIB: bikin folder sebelum composer install
+# 🔥 WAJIB: buat folder Laravel
 RUN mkdir -p \
     bootstrap/cache \
     storage/framework/sessions \
     storage/framework/views \
     storage/framework/cache
 
-# 🔥 permission dulu sebelum composer
 RUN chmod -R 775 bootstrap/cache storage
 
+# install dependency PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Vite build copy
-COPY --from=node /app/public/build /app/public/build
+# 🔥 ambil hasil build Vite (AMAN)
+COPY --from=node /app/public /app/public
 
-# safety clear
+# clear cache aman (jangan fail build)
 RUN php artisan config:clear || true
 RUN php artisan cache:clear || true
 RUN php artisan view:clear || true
