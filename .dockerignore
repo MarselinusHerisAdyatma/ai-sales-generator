@@ -1,0 +1,11 @@
+node_modules
+vendor
+.env
+
+.git
+.gitignore
+
+storage
+bootstrap/cache
+
+public/build
