@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
 
 export default defineConfig({
     plugins: [
@@ -10,6 +10,9 @@ export default defineConfig({
     ],
     build: {
         outDir: 'public/build',
-        manifest: true,
+        emptyOutDir: true,
+
+        // ❌ JANGAN RELY DEFAULT
+        manifest: 'manifest.json', // 🔥 FORCE ROOT MANIFEST
     },
-});
+})

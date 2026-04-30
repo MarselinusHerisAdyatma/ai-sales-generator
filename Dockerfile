@@ -1,6 +1,8 @@
+# ===== FRONTEND BUILD =====
 FROM node:18 AS node-builder
 
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm install
 
@@ -8,33 +10,46 @@ COPY . .
 RUN npm run build
 
 
+# ===== BACKEND =====
 FROM php:8.2-cli
 
 WORKDIR /app
 
+# install dependencies
 RUN apt-get update && apt-get install -y \
     git curl unzip libzip-dev libpng-dev libonig-dev \
     && docker-php-ext-install pdo pdo_mysql zip
 
+# install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 🔥 COPY FULL PROJECT SEKALI SAJA
+# copy project
 COPY . .
 
-# 🔥 OVERWRITE VITE BUILD DI PALING AKHIR
+# copy vite build
 COPY --from=node-builder /app/public/build /app/public/build
 
-RUN mkdir -p storage/framework/{sessions,views,cache} bootstrap/cache
+# storage wajib
+RUN mkdir -p \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    bootstrap/cache
 
 RUN chmod -R 777 storage bootstrap/cache
 
+# install php deps
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:clear || true
-RUN php artisan view:clear || true
+# clear + cache config (INI PENTING)
+RUN php artisan optimize:clear || true
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
 
-EXPOSE 8080
-CMD ["php", "-S", "0.0.0.0", "8080", "-t", "public"]
-
+# check build (debug only)
 RUN echo "=== CHECK BUILD ===" && ls -lah public/build || true
 RUN cat public/build/manifest.json || true
+
+EXPOSE 8080
+
+CMD ["php", "-S", "0.0.0.0", "8080", "-t", "public"]
