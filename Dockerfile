@@ -35,3 +35,5 @@ RUN php artisan view:clear || true
 
 EXPOSE 8080
 CMD ["php", "-S", "0.0.0.0", "8080", "-t", "public"]
+
+RUN ls -lah public/build || true
