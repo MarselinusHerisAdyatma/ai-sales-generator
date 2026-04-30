@@ -1,20 +1,3 @@
-# ========================
-# BUILD VITE (NODE STAGE)
-# ========================
-FROM node:18 as node
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-RUN npm run build
-
-
-# ========================
-# LARAVEL STAGE
-# ========================
 FROM php:8.2-cli
 
 WORKDIR /app
@@ -25,26 +8,27 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# copy project
 COPY . .
 
-# install php deps
+# 🔥 WAJIB: bikin folder sebelum composer install
+RUN mkdir -p \
+    bootstrap/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache
+
+# 🔥 permission dulu sebelum composer
+RUN chmod -R 775 bootstrap/cache storage
+
 RUN composer install --no-dev --optimize-autoloader
 
-# 🔥 penting: copy hasil Vite build
+# Vite build copy
 COPY --from=node /app/public/build /app/public/build
 
-# 🔥 FIX LARAVEL RUNTIME FOLDER (INI WAJIB)
-RUN mkdir -p \
-    storage/framework/{sessions,views,cache} \
-    bootstrap/cache
-
-RUN chmod -R 775 storage bootstrap/cache
-
-# optional tapi aman
+# safety clear
 RUN php artisan config:clear || true
-RUN php artisan view:clear || true
 RUN php artisan cache:clear || true
+RUN php artisan view:clear || true
 
 EXPOSE 8080
 
