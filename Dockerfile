@@ -10,10 +10,11 @@ RUN npm install
 
 COPY . .
 
+# 🔥 pastikan VITE benar-benar build
 RUN npm run build
 
 # =========================
-# LARAVEL APP
+# PHP LARAVEL
 # =========================
 FROM php:8.2-cli
 
@@ -27,7 +28,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-# 🔥 WAJIB: buat folder Laravel
+# 🔥 WAJIB FOLDER LARAVEL
 RUN mkdir -p \
     bootstrap/cache \
     storage/framework/sessions \
@@ -36,13 +37,16 @@ RUN mkdir -p \
 
 RUN chmod -R 775 bootstrap/cache storage
 
-# install dependency PHP
+# install dependency
 RUN composer install --no-dev --optimize-autoloader
 
-# 🔥 ambil hasil build Vite (AMAN)
-COPY --from=node /app/public /app/public
+# 🔥 INI FIX UTAMA VITE
+COPY --from=node /app/public/build /app/public/build
 
-# clear cache aman (jangan fail build)
+# 🔥 fallback safety check (biar ketahuan kalau gagal)
+RUN ls -lah public/build || true
+
+# cache clear aman
 RUN php artisan config:clear || true
 RUN php artisan cache:clear || true
 RUN php artisan view:clear || true
