@@ -1,3 +1,20 @@
+# =========================
+# 1. NODE BUILD STAGE (VITE)
+# =========================
+FROM node:18 as node
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+
+# =========================
+# 2. PHP RUNTIME STAGE
+# =========================
 FROM php:8.2-cli
 
 WORKDIR /app
@@ -12,12 +29,10 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# 🔥 PAKSA COPY BUILD (INI FIX UTAMA)
+# 🔥 INI WAJIB ADA (FIX UTAMA KAMU)
 COPY --from=node /app/public/build ./public/build
 
-# 🔥 DEBUG WAJIB (LIHAT DI RAILWAY LOG)
 RUN ls -lah public/build
-RUN ls -lah public/build/assets
 
 RUN chmod -R 775 storage bootstrap/cache
 
