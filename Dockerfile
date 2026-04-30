@@ -43,8 +43,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 # clear + cache config (INI PENTING)
 RUN php artisan optimize:clear || true
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
 
 # check build (debug only)
 RUN echo "=== CHECK BUILD ===" && ls -lah public/build || true
