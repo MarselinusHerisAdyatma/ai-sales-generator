@@ -1,6 +1,6 @@
-# =========================
-# NODE BUILD (VITE)
-# =========================
+# ======================
+# NODE BUILD STAGE
+# ======================
 FROM node:18 AS node
 
 WORKDIR /app
@@ -10,12 +10,16 @@ RUN npm install
 
 COPY . .
 
-# 🔥 pastikan VITE benar-benar build
+# 🔥 FORCE VITE BUILD + FAIL IF ERROR
 RUN npm run build
 
-# =========================
-# PHP LARAVEL
-# =========================
+# cek hasil build (WAJIB)
+RUN ls -lah public/build
+
+
+# ======================
+# PHP LARAVEL STAGE
+# ======================
 FROM php:8.2-cli
 
 WORKDIR /app
@@ -28,7 +32,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-# 🔥 WAJIB FOLDER LARAVEL
+# 🔥 WAJIB folder Laravel runtime
 RUN mkdir -p \
     bootstrap/cache \
     storage/framework/sessions \
@@ -37,16 +41,16 @@ RUN mkdir -p \
 
 RUN chmod -R 775 bootstrap/cache storage
 
-# install dependency
+# install PHP deps
 RUN composer install --no-dev --optimize-autoloader
 
-# 🔥 INI FIX UTAMA VITE
-COPY --from=node /app/public/build /app/public/build
+# 🔥 INI FIX UTAMA (JANGAN /public BUILD, AMBIL FULL PUBLIC)
+COPY --from=node /app/public /app/public
 
-# 🔥 fallback safety check (biar ketahuan kalau gagal)
+# sanity check
 RUN ls -lah public/build || true
 
-# cache clear aman
+# clear cache aman
 RUN php artisan config:clear || true
 RUN php artisan cache:clear || true
 RUN php artisan view:clear || true
