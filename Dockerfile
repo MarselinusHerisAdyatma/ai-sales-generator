@@ -1,8 +1,13 @@
 FROM node:18 as node
+
 WORKDIR /app
-COPY . .
+
+COPY package*.json ./
 RUN npm install
+
+COPY . .
 RUN npm run build
+
 
 FROM php:8.2-cli
 

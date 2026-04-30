@@ -4,22 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SalesPage;
+use Illuminate\Support\Facades\Auth;
 
 class SalesPageController extends Controller
 {
+    public function __construct()
+    {
+        // 🔒 WAJIB LOGIN untuk semua method
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        $salesPages = SalesPage::where(
-            'user_id',
-            auth()->id()
-        )
-        ->latest()
-        ->get();
+        $userId = Auth::id();
 
-        return view(
-            'sales_pages.index',
-            compact('salesPages')
-        );
+        $salesPages = SalesPage::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        return view('sales_pages.index', compact('salesPages'));
     }
 
     public function create()
@@ -29,18 +32,23 @@ class SalesPageController extends Controller
 
     public function store(Request $request)
     {
+        // 🔒 VALIDASI LEBIH AMAN
         $request->validate([
-            'product_name' => 'required',
-            'description' => 'required',
+            'product_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'features' => 'nullable|string',
+            'target_audience' => 'nullable|string',
+            'price' => 'nullable|string',
+            'unique_selling_points' => 'nullable|string',
         ]);
 
-        $featuresArray = array_map(
-            'trim',
-            explode(',', $request->features)
-        );
+        // 🔒 SAFE EXPLODE (anti error kalau kosong)
+        $featuresArray = $request->features
+            ? array_map('trim', explode(',', $request->features))
+            : [];
 
-        SalesPage::create([
-            'user_id' => auth()->id(),
+        $salesPage = SalesPage::create([
+            'user_id' => Auth::id(),
             'product_name' => $request->product_name,
             'description' => $request->description,
             'features' => $request->features,
@@ -48,61 +56,43 @@ class SalesPageController extends Controller
             'price' => $request->price,
             'unique_selling_points' => $request->unique_selling_points,
 
-            // sementara dummy dulu, nanti jadi AI generator
             'generated_content' => json_encode([
-            'Grow Faster with '.$request->product_name,
+                'headline' => 'Grow Faster with ' . $request->product_name,
 
-            'subheadline' =>
-            'Designed for '.$request->target_audience.
-            ' who want faster results.',
+                'subheadline' =>
+                    'Designed for ' . ($request->target_audience ?? 'everyone') .
+                    ' who want faster results.',
 
-            'benefits' => $featuresArray,
+                'benefits' => $featuresArray,
 
-            'cta' => 'Enroll Now',
+                'cta' => 'Enroll Now',
 
-            'social_proof' =>
-            'Trusted by 1,000+ happy customers'
-
+                'social_proof' => 'Trusted by 1,000+ happy customers'
             ])
         ]);
 
-        $salesPage = SalesPage::where(
-        'user_id',
-        auth()->id()
-        )->latest()->first();
-
-        return redirect()
-            ->route('sales-pages.show', $salesPage->id);
+        return redirect()->route('sales-pages.show', $salesPage->id);
     }
 
     public function show($id)
     {
-        $salesPage = SalesPage::findOrFail($id);
+        $salesPage = SalesPage::where('user_id', Auth::id())
+            ->findOrFail($id);
 
-        $content =
-        json_decode(
-        $salesPage->generated_content,
-        true
-        );
+        $content = json_decode($salesPage->generated_content, true);
 
-        return view(
-        'sales_pages.show',
-        compact('salesPage','content')
-        );
+        return view('sales_pages.show', compact('salesPage', 'content'));
     }
 
     public function destroy($id)
     {
-        $page = SalesPage::where(
-            'user_id',
-            auth()->id()
-        )->findOrFail($id);
+        $page = SalesPage::where('user_id', Auth::id())
+            ->findOrFail($id);
 
         $page->delete();
 
         return redirect()
             ->route('sales-pages.index')
-            ->with('success','Page deleted.');
+            ->with('success', 'Page deleted successfully.');
     }
-    
 }
