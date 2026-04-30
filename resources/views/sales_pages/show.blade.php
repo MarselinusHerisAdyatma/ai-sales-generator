@@ -18,6 +18,7 @@
                 'card' => 'bg-white border-gray-100',
                 'text_title' => 'text-gray-900',
                 'accent' => 'text-blue-600',
+                'benefit_card' => 'bg-white border-gray-100',
                 'advantage_box' => 'bg-indigo-50 border-indigo-100',
                 'advantage_title' => 'text-indigo-900', // TAMBAHKAN INI
                 'advantage_text' => 'text-indigo-700',  // TAMBAHKAN INI
@@ -34,6 +35,7 @@
                 'card' => 'bg-gray-900 border-gray-800',
                 'text_title' => 'text-white',
                 'accent' => 'text-amber-400',
+                'benefit_card' => 'bg-gray-900 border-gray-800',
                 'advantage_box' => 'bg-black border-gray-800',
                 'advantage_title' => 'text-amber-400',
                 'advantage_text' => 'text-amber-200/90', 
@@ -50,6 +52,7 @@
                 'card' => 'bg-white border-gray-200',
                 'text_title' => 'text-gray-900',
                 'accent' => 'text-black',
+                'benefit_card' => 'bg-white border-gray-200',
                 'advantage_box' => 'bg-gray-50 border-gray-100',
                 'advantage_title' => 'text-gray-900', 
                 'advantage_text' => 'text-gray-600',
