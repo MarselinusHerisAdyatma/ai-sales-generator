@@ -18,7 +18,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-# 🔥 FIX KRITIS INI
 RUN mkdir -p bootstrap/cache storage
 RUN chmod -R 775 bootstrap/cache storage
 
@@ -26,8 +25,7 @@ RUN composer install --no-dev --optimize-autoloader
 
 COPY --from=node /app/public/build public/build
 
-RUN php artisan optimize:clear
-
-RUN chmod -R 775 storage bootstrap/cache
+# ❌ JANGAN pakai optimize:clear di build
+# RUN php artisan optimize:clear
 
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
