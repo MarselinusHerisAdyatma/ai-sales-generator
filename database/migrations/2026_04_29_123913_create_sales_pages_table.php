@@ -13,23 +13,18 @@ return new class extends Migration
     {
         Schema::create('sales_pages', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-
             $table->string('product_name');
-
             $table->text('description');
-
             $table->text('features')->nullable();
-
             $table->string('target_audience')->nullable();
-
-            $table->string('price')->nullable();
+            
+            // Kolom Harga & Mata Uang
+            $table->string('price')->nullable(); 
+            $table->string('currency')->default('USD'); // Otomatis berada di bawah price
 
             $table->text('unique_selling_points')->nullable();
-
             $table->longText('generated_content')->nullable();
-
             $table->timestamps();
         });
     }

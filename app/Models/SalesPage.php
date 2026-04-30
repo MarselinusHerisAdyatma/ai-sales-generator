@@ -14,8 +14,10 @@ class SalesPage extends Model
         'features',
         'target_audience',
         'price',
+        'currency', // Tambahkan ini
+        'template',
         'unique_selling_points',
-        'generated_content'
+        'generated_content',
     ];
 
     public function user()
