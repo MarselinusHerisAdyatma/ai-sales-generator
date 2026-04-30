@@ -18,6 +18,11 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan view:clear
+RUN php artisan optimize
+
 COPY --from=node /app/public/build ./public/build
 
 RUN chmod -R 775 storage bootstrap/cache
