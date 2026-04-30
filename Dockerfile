@@ -1,22 +1,13 @@
-# =========================
-# 1. NODE BUILD STAGE (VITE)
-# =========================
+# build assets
 FROM node:18 as node
-
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm install
-
 COPY . .
 RUN npm run build
 
-
-# =========================
-# 2. PHP RUNTIME STAGE
-# =========================
+# laravel
 FROM php:8.2-cli
-
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
@@ -29,10 +20,11 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# 🔥 INI WAJIB ADA (FIX UTAMA KAMU)
+# IMPORTANT: ambil hasil build vite
 COPY --from=node /app/public/build ./public/build
 
-RUN ls -lah public/build
+# CLEAN CACHE (INI WAJIB)
+RUN php artisan optimize:clear
 
 RUN chmod -R 775 storage bootstrap/cache
 
