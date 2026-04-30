@@ -16,3 +16,4 @@ RUN npm install && npm run build
 RUN chmod -R 775 storage bootstrap/cache
 
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
+
