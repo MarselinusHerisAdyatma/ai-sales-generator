@@ -17,8 +17,8 @@ WORKDIR /app
 
 # install dependencies
 RUN apt-get update && apt-get install -y \
-    git curl unzip libzip-dev libpng-dev libonig-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
+    git curl unzip libzip-dev libpng-dev libonig-dev libicu-dev \
+    && docker-php-ext-install pdo pdo_mysql zip intl
 
 # install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
