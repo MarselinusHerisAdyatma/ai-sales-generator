@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $salesPage->product_name }} - Sales Page</title>
+    <title>{{ $salesPage->product_name }}</title>
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,6 +11,8 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Syncing custom transitions & animations from show.blade */
+        .group:hover .card-hover { transform: scale(1.02); }
         .animate-bounce-slow {
             animation: bounce 2s infinite;
         }
@@ -22,7 +24,7 @@
 </head>
 
 @php
-    // SINKRONISASI TEMA DENGAN SHOW.BLADE
+    // EXACT THEME MATCHING FROM SHOW.BLADE
     $themes = [
         'professional' => [
             'bg_main' => 'bg-gray-50',
@@ -72,8 +74,8 @@
 
     <div class="max-w-6xl mx-auto px-6">
         
-        <!-- HERO SECTION -->
-        <div class="bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl relative overflow-hidden">
+        <!-- HERO SECTION (MATCHED) -->
+        <div class="bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl relative overflow-hidden transition-all duration-500">
             <h1 class="text-6xl font-black mb-6 leading-tight relative z-10">
                 {{ $content['headline'] ?? 'Headline Pending...' }}
             </h1>
@@ -82,13 +84,13 @@
             </p>
             <div class="relative z-10">
                 <a href="#pricing" 
-                   class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl uppercase tracking-wider">
+                   class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl transition-transform uppercase tracking-wider">
                     {{ !empty($content['cta']) ? $content['cta'] : 'Buy Now' }}
                 </a>
             </div>
         </div>
 
-        <!-- BENEFITS SECTION -->
+        <!-- BENEFITS SECTION (MATCHED) -->
         <div class="mt-24">
             <div class="flex flex-col items-center mb-16">
                 <h2 class="text-3xl font-black {{ $theme['text_title'] }} uppercase tracking-widest mb-4">
@@ -98,7 +100,7 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 @forelse(array_slice($content['benefits'] ?? [], 0, 3) as $benefit)
-                    <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border">
+                    <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border transition-all">
                         <div class="w-16 h-16 {{ $theme['accent'] }} bg-opacity-10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                             <svg class="w-8 h-8 {{ $theme['accent'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -112,8 +114,8 @@
             </div>
         </div>
 
-        <!-- ADVANTAGE SECTION (DENGAN IKON PETIR) -->
-        <div class="mt-20 {{ $theme['advantage_box'] }} rounded-[3rem] p-12 border flex flex-col md:flex-row items-center gap-10">
+        <!-- ADVANTAGE SECTION (MATCHED) -->
+        <div class="mt-20 {{ $theme['advantage_box'] }} rounded-[3rem] p-12 border flex flex-col md:flex-row items-center gap-10 transition-all">
             <div class="flex-1 text-center md:text-left">
                 <h2 class="text-3xl font-black {{ $theme['advantage_title'] }} mb-4 italic">
                     The {{ $salesPage->product_name }} Advantage
@@ -127,10 +129,9 @@
             </div>
         </div>
 
-        <!-- PRICING SECTION -->
-        <div id="pricing" class="{{ $theme['card'] }} rounded-[3rem] shadow-2xl p-16 mt-20 text-center border">
+        <!-- PRICING SECTION (MATCHED) -->
+        <div id="pricing" class="{{ $theme['card'] }} rounded-[3rem] shadow-2xl p-16 mt-20 text-center border transition-all">
             <div class="max-w-2xl mx-auto">
-                <!-- SOCIAL PROOF -->
                 <p class="{{ $theme['accent'] }} font-black uppercase tracking-[0.2em] text-sm mb-6">
                     {{ !empty($content['social_proof']) ? $content['social_proof'] : 'Limited Time Offer' }}
                 </p>
@@ -143,7 +144,7 @@
                     {{ $formattedPrice }}
                 </div>
                 
-                <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl w-full md:w-auto uppercase tracking-widest">
+                <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl w-full md:w-auto uppercase tracking-widest transition-all">
                     {{ !empty($content['cta']) ? $content['cta'] : 'Get Started Now' }}
                 </button>
                 
@@ -155,8 +156,8 @@
 
     </div>
 
-    <!-- Script Smooth Scroll -->
     <script>
+        // Adding basic interactivity to the exported file
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
