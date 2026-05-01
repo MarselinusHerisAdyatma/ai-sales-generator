@@ -3,17 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $salesPage->product_name }}</title>
+    <title>{{ $salesPage->product_name }} - Sales Page</title>
 
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .animate-bounce-slow {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+            50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+        }
     </style>
 </head>
 
 @php
+    // SINKRONISASI TEMA DENGAN SHOW.BLADE
     $themes = [
         'professional' => [
             'bg_main' => 'bg-gray-50',
@@ -26,8 +35,7 @@
             'advantage_box' => 'bg-indigo-50 border-indigo-100',
             'advantage_title' => 'text-indigo-900',
             'advantage_text' => 'text-indigo-700',
-            'btn_cta' => 'bg-blue-600 text-white',
-            'price_text' => 'text-gray-900'
+            'btn_cta' => 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200'
         ],
         'midnight' => [
             'bg_main' => 'bg-gray-950',
@@ -39,9 +47,8 @@
             'benefit_card' => 'bg-gray-900 border-gray-800',
             'advantage_box' => 'bg-black border-gray-800',
             'advantage_title' => 'text-amber-400',
-            'advantage_text' => 'text-amber-200/90',
-            'btn_cta' => 'bg-amber-500 text-black',
-            'price_text' => 'text-amber-400'
+            'advantage_text' => 'text-amber-200/90', 
+            'btn_cta' => 'bg-amber-500 hover:bg-amber-600 text-black shadow-amber-900/20'
         ],
         'minimalist' => [
             'bg_main' => 'bg-white',
@@ -52,103 +59,112 @@
             'accent' => 'text-black',
             'benefit_card' => 'bg-white border-gray-200',
             'advantage_box' => 'bg-gray-50 border-gray-100',
-            'advantage_title' => 'text-gray-900',
+            'advantage_title' => 'text-gray-900', 
             'advantage_text' => 'text-gray-600',
-            'btn_cta' => 'bg-black text-white',
-            'price_text' => 'text-gray-900'
+            'btn_cta' => 'bg-black hover:bg-gray-800 text-white shadow-xl'
         ]
     ];
 
     $theme = $themes[$salesPage->template] ?? $themes['professional'];
 @endphp
 
-<body class="{{ $theme['bg_main'] }} antialiased transition-all duration-500">
+<body class="{{ $theme['bg_main'] }} antialiased transition-colors duration-500 min-h-screen py-14">
 
-<div class="max-w-6xl mx-auto px-6 py-14">
-
-    <!-- HERO -->
-    <div class="bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl">
-        <h1 class="text-6xl font-black mb-6 leading-tight">
-            {{ $content['headline'] ?? 'Headline Pending...' }}
-        </h1>
-
-        <p class="text-2xl opacity-80 mb-12 max-w-3xl mx-auto leading-relaxed">
-            {{ $content['subheadline'] ?? '' }}
-        </p>
-
-        <a href="#pricing"
-           class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl uppercase tracking-wider">
-            {{ $content['cta'] ?? 'Buy Now' }}
-        </a>
-    </div>
-
-    <!-- BENEFITS -->
-    <div class="mt-24">
-        <h2 class="text-3xl font-black {{ $theme['text_title'] }} text-center uppercase tracking-widest mb-16">
-            Why Choose Us?
-        </h2>
-
-        <div class="grid md:grid-cols-3 gap-8">
-            @forelse(array_slice($content['benefits'] ?? [], 0, 3) as $benefit)
-                <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border">
-                    <div class="w-16 h-16 {{ $theme['accent'] }} bg-opacity-10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 {{ $theme['accent'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M5 13l4 4L19 7" stroke-width="3"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="text-xl font-black {{ $theme['text_title'] }}">
-                        {{ $benefit }}
-                    </h3>
-                </div>
-            @empty
-                <p class="col-span-full text-center text-gray-400 italic">
-                    No benefits generated yet.
-                </p>
-            @endforelse
-        </div>
-    </div>
-
-    <!-- ADVANTAGE -->
-    <div class="mt-20 {{ $theme['advantage_box'] }} rounded-[3rem] p-12 border flex flex-col md:flex-row items-center gap-10">
-        <div class="flex-1 text-center md:text-left">
-            <h2 class="text-3xl font-black {{ $theme['advantage_title'] }} mb-4 italic">
-                The {{ $salesPage->product_name }} Advantage
-            </h2>
-
-            <p class="text-xl {{ $theme['advantage_text'] }} leading-relaxed font-medium italic">
-                "{{ $salesPage->unique_selling_points }}"
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <!-- HERO SECTION -->
+        <div class="bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl relative overflow-hidden">
+            <h1 class="text-6xl font-black mb-6 leading-tight relative z-10">
+                {{ $content['headline'] ?? 'Headline Pending...' }}
+            </h1>
+            <p class="text-2xl opacity-80 mb-12 max-w-3xl mx-auto leading-relaxed relative z-10">
+                {{ $content['subheadline'] ?? '' }}
             </p>
+            <div class="relative z-10">
+                <a href="#pricing" 
+                   class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl uppercase tracking-wider">
+                    {{ !empty($content['cta']) ? $content['cta'] : 'Buy Now' }}
+                </a>
+            </div>
         </div>
-    </div>
 
-    <!-- PRICING -->
-    <div id="pricing" class="{{ $theme['card'] }} rounded-[3rem] shadow-2xl p-16 mt-20 text-center border">
-        <div class="max-w-2xl mx-auto">
-
-            <p class="{{ $theme['accent'] }} font-black uppercase tracking-[0.2em] text-sm mb-6">
-                {{ $content['social_proof'] ?? 'Limited Time Offer' }}
-            </p>
-
-            <h2 class="text-4xl font-black {{ $theme['text_title'] }} mb-10 italic">
-                "The best investment for your business growth."
-            </h2>
-
-            <div class="text-7xl font-black {{ $theme['price_text'] }} mb-12">
-                {{ $formattedPrice }}
+        <!-- BENEFITS SECTION -->
+        <div class="mt-24">
+            <div class="flex flex-col items-center mb-16">
+                <h2 class="text-3xl font-black {{ $theme['text_title'] }} uppercase tracking-widest mb-4">
+                    Why Choose Us?
+                </h2>
             </div>
 
-            <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl uppercase tracking-widest">
-                {{ $content['cta'] ?? 'Get Started Now' }}
-            </button>
-
-            <p class="mt-8 text-gray-400 text-[10px] uppercase">
-                Secure checkout. 100% Satisfaction Guarantee.
-            </p>
-
+            <div class="grid md:grid-cols-3 gap-8">
+                @forelse(array_slice($content['benefits'] ?? [], 0, 3) as $benefit)
+                    <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border">
+                        <div class="w-16 h-16 {{ $theme['accent'] }} bg-opacity-10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 {{ $theme['accent'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-black {{ $theme['text_title'] }}">{{ $benefit }}</h3>
+                    </div>
+                @empty
+                    <p class="col-span-full text-center text-gray-400 italic">No benefits generated yet.</p>
+                @endforelse
+            </div>
         </div>
+
+        <!-- ADVANTAGE SECTION (DENGAN IKON PETIR) -->
+        <div class="mt-20 {{ $theme['advantage_box'] }} rounded-[3rem] p-12 border flex flex-col md:flex-row items-center gap-10">
+            <div class="flex-1 text-center md:text-left">
+                <h2 class="text-3xl font-black {{ $theme['advantage_title'] }} mb-4 italic">
+                    The {{ $salesPage->product_name }} Advantage
+                </h2>
+                <p class="text-xl {{ $theme['advantage_text'] }} leading-relaxed font-medium italic">
+                    "{{ $salesPage->unique_selling_points }}"
+                </p>
+            </div>
+            <div class="bg-white p-8 rounded-full shadow-2xl animate-bounce-slow hidden md:block">
+                <span class="text-5xl">⚡</span>
+            </div>
+        </div>
+
+        <!-- PRICING SECTION -->
+        <div id="pricing" class="{{ $theme['card'] }} rounded-[3rem] shadow-2xl p-16 mt-20 text-center border">
+            <div class="max-w-2xl mx-auto">
+                <!-- SOCIAL PROOF -->
+                <p class="{{ $theme['accent'] }} font-black uppercase tracking-[0.2em] text-sm mb-6">
+                    {{ !empty($content['social_proof']) ? $content['social_proof'] : 'Limited Time Offer' }}
+                </p>
+                
+                <h2 class="text-4xl font-black {{ $theme['text_title'] }} mb-10 italic leading-snug">
+                    "The best investment for your business growth."
+                </h2>
+                
+                <div class="text-7xl font-black {{ $theme['text_title'] }} mb-12 tracking-tighter">
+                    {{ $formattedPrice }}
+                </div>
+                
+                <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl w-full md:w-auto uppercase tracking-widest">
+                    {{ !empty($content['cta']) ? $content['cta'] : 'Get Started Now' }}
+                </button>
+                
+                <p class="mt-8 text-gray-400 text-[10px] font-medium uppercase tracking-tight">
+                    Secure checkout. 100% Satisfaction Guarantee.
+                </p>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <!-- Script Smooth Scroll -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -9,7 +9,7 @@
                         <p class="text-gray-600">Apa yang ingin Anda jual hari ini?</p>
                     </div>
                     <a href="{{ route('sales-pages.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition shadow-lg">
-                        + Buat Sales Page Baru
+                        + Create New Page
                     </a>
                 </div>
 
