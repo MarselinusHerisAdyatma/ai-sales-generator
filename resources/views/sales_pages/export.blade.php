@@ -9,22 +9,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
+    <!-- CSS PERSIS DARI SHOW.BLADE -->
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Syncing custom transitions & animations from show.blade */
-        .group:hover .card-hover { transform: scale(1.02); }
-        .animate-bounce-slow {
-            animation: bounce 2s infinite;
+        .glass-btn {
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
-            50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+        /* Menjaga animasi tetap ada di file export */
+        .group:hover .card-hover { transform: scale(1.02); }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .animate-bounce-custom {
+            animation: bounce-slow 2s infinite;
         }
     </style>
 </head>
 
 @php
-    // EXACT THEME MATCHING FROM SHOW.BLADE
+    // DAFTAR TEMA PERSIS DARI SHOW.BLADE KAMU
     $themes = [
         'professional' => [
             'bg_main' => 'bg-gray-50',
@@ -70,12 +76,11 @@
     $theme = $themes[$salesPage->template] ?? $themes['professional'];
 @endphp
 
-<body class="{{ $theme['bg_main'] }} antialiased transition-colors duration-500 min-h-screen py-14">
-
+<body class="min-h-screen {{ $theme['bg_main'] }} py-14 transition-colors duration-500 antialiased">
     <div class="max-w-6xl mx-auto px-6">
-        
-        <!-- HERO SECTION (MATCHED) -->
-        <div class="bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl relative overflow-hidden transition-all duration-500">
+
+        <!-- Hero Section -->
+        <div class="group relative bg-gradient-to-br {{ $theme['hero'] }} rounded-[3rem] p-20 text-center shadow-2xl overflow-hidden transition-all duration-500">
             <h1 class="text-6xl font-black mb-6 leading-tight relative z-10">
                 {{ $content['headline'] ?? 'Headline Pending...' }}
             </h1>
@@ -83,14 +88,13 @@
                 {{ $content['subheadline'] ?? '' }}
             </p>
             <div class="relative z-10">
-                <a href="#pricing" 
-                   class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl transition-transform uppercase tracking-wider">
-                    {{ !empty($content['cta']) ? $content['cta'] : 'Buy Now' }}
+                <a href="#pricing" class="inline-block {{ $theme['btn_hero'] }} px-10 py-5 rounded-2xl font-black text-xl shadow-xl hover:scale-105 transition-transform uppercase tracking-wider">
+                    {{ $content['cta'] ?? 'Buy Now' }}
                 </a>
             </div>
         </div>
 
-        <!-- BENEFITS SECTION (MATCHED) -->
+        <!-- Benefits Section -->
         <div class="mt-24">
             <div class="flex flex-col items-center mb-16">
                 <h2 class="text-3xl font-black {{ $theme['text_title'] }} uppercase tracking-widest mb-4">
@@ -100,7 +104,7 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 @forelse(array_slice($content['benefits'] ?? [], 0, 3) as $benefit)
-                    <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border transition-all">
+                    <div class="{{ $theme['benefit_card'] }} rounded-[2rem] shadow-xl p-10 text-center border hover:scale-[1.02] transition-all">
                         <div class="w-16 h-16 {{ $theme['accent'] }} bg-opacity-10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                             <svg class="w-8 h-8 {{ $theme['accent'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -109,12 +113,12 @@
                         <h3 class="text-xl font-black {{ $theme['text_title'] }}">{{ $benefit }}</h3>
                     </div>
                 @empty
-                    <p class="col-span-full text-center text-gray-400 italic">No benefits generated yet.</p>
+                    <p class="col-span-full text-center text-gray-400 italic mb-10">No benefits generated yet.</p>
                 @endforelse
             </div>
         </div>
 
-        <!-- ADVANTAGE SECTION (MATCHED) -->
+        <!-- Advantage Section -->
         <div class="mt-20 {{ $theme['advantage_box'] }} rounded-[3rem] p-12 border flex flex-col md:flex-row items-center gap-10 transition-all">
             <div class="flex-1 text-center md:text-left">
                 <h2 class="text-3xl font-black {{ $theme['advantage_title'] }} mb-4 italic">
@@ -124,12 +128,12 @@
                     "{{ $salesPage->unique_selling_points }}"
                 </p>
             </div>
-            <div class="bg-white p-8 rounded-full shadow-2xl animate-bounce-slow hidden md:block">
+            <div class="bg-white p-8 rounded-full shadow-2xl animate-bounce-custom hidden md:block">
                 <span class="text-5xl">⚡</span>
             </div>
         </div>
 
-        <!-- PRICING SECTION (MATCHED) -->
+        <!-- Pricing Section -->
         <div id="pricing" class="{{ $theme['card'] }} rounded-[3rem] shadow-2xl p-16 mt-20 text-center border transition-all">
             <div class="max-w-2xl mx-auto">
                 <p class="{{ $theme['accent'] }} font-black uppercase tracking-[0.2em] text-sm mb-6">
@@ -144,7 +148,7 @@
                     {{ $formattedPrice }}
                 </div>
                 
-                <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl w-full md:w-auto uppercase tracking-widest transition-all">
+                <button class="{{ $theme['btn_cta'] }} px-16 py-6 rounded-2xl font-black text-2xl shadow-2xl active:scale-95 transition-all w-full md:w-auto uppercase tracking-widest">
                     {{ !empty($content['cta']) ? $content['cta'] : 'Get Started Now' }}
                 </button>
                 
@@ -153,11 +157,9 @@
                 </p>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Adding basic interactivity to the exported file
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
