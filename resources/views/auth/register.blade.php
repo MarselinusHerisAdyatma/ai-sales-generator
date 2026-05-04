@@ -6,6 +6,14 @@
         <h2 class="text-3xl font-extrabold text-gray-900">Create Account</h2>
     </div>
 
+    <!-- SUBTLE LOGIN LINK FOR TESTERS -->
+    <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
+        <p class="text-xs text-gray-600">
+            Looking for the tester account? 
+            <a href="{{ route('login') }}" class="text-blue-600 font-bold hover:underline ml-1">Use Dummy Login</a>
+        </p>
+    </div>
+
     <form method="POST" action="{{ route('register') }}" class="space-y-4">
         @csrf
         <div>
@@ -21,12 +29,10 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <x-input-label for="password" value="Password" />
-                {{-- Slot Password Utama --}}
                 <x-password-input id="password" name="password" class="block mt-1 w-full" required />
             </div>
             <div>
                 <x-input-label for="password_confirmation" value="Confirm Password" />
-                {{-- Slot Konfirmasi Password --}}
                 <x-password-input id="password_confirmation" name="password_confirmation" class="block mt-1 w-full" required />
             </div>
         </div>

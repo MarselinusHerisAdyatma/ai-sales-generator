@@ -6,6 +6,15 @@
         <h2 class="text-3xl font-extrabold text-gray-900">Login to Account</h2>
     </div>
 
+    <!-- DUMMY ACCOUNT NOTE -->
+    <div class="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-xl text-sm">
+        <p class="font-bold text-blue-800 mb-1 flex items-center gap-2">
+            <span>💡</span> Tester Account (Dummy)
+        </p>
+        <p class="text-blue-700">Email: <span class="font-mono font-bold select-all">marsel@gmail.com</span></p>
+        <p class="text-blue-700">Pass: <span class="font-mono font-bold select-all">13579Marsel</span></p>
+    </div>
+
     <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
         <div>
@@ -18,7 +27,6 @@
                 <x-input-label for="password" value="Password" class="font-semibold text-gray-700" />
                 <a class="text-sm text-blue-600 hover:underline" href="{{ route('password.request') }}">Forgot?</a>
             </div>
-            {{-- Menggunakan komponen password-input yang baru --}}
             <x-password-input id="password" name="password" class="block mt-1 w-full" required />
         </div>
         
@@ -30,5 +38,9 @@
         <button class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-lg shadow-blue-200">
             Log In
         </button>
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+            Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 font-bold hover:underline">Register here</a>
+        </p>
     </form>
 </x-guest-layout>
